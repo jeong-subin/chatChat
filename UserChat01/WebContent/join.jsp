@@ -49,6 +49,13 @@
 			userID =(String) session.getAttribute("userID");
 					
 		}
+		if(userID != null){
+			session.setAttribute("messageType", "오류 메시지");
+			session.setAttribute("messageContent", "현재 로그인이 되어 있는 상태입니다.");
+			response.sendRedirect("index.jsp");
+			return;
+		}
+		
 	%>
 	<nav class ="navbar navbar-default">
 		<div class="navbar-header">
@@ -78,18 +85,6 @@
 							<li><a href="login.jsp">로그인</a></li>
 							<li><a href="join.jsp">회원가입</a></li>
 						</ul>
-					</li>
-				</ul>
-				<%		
-					}else{
-				%>
-				<ul class="nav navbar-nav navbar-right">
-					<li class="dropdown">
-						<a href="#" class="dropdown-togle"
-							data-toggle="dropdown" role="button" aria-haspopup="true"
-							aria-expanded="false">회원관리<span class="caret"></span>
-						</a>
-						
 					</li>
 				</ul>
 				<%		

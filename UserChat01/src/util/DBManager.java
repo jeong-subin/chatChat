@@ -1,6 +1,7 @@
 package util;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
@@ -29,6 +30,15 @@ public class DBManager {
 		try {
 			rs.close();
 			stmt.close();
+			conn.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	public static void close(Connection conn, PreparedStatement pstmt, ResultSet rs) {
+		try {
+			rs.close();
+			pstmt.close();
 			conn.close();
 		} catch (Exception e) {
 			e.printStackTrace();
