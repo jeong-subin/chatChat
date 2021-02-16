@@ -26,7 +26,7 @@ public class ChatListServlet extends HttpServlet {
 		if(fromID == null || fromID.equals("") || toID == null || toID.equals("") || 
 				listType == null || listType.equals("") ) {
 			response.getWriter().write("");
-		}else if(listType.equals("ten")) {
+		}else if(listType.equals("0")) {
 			response.getWriter().write(getTen(URLDecoder.decode(fromID,"UTF-8"),URLDecoder.decode(toID,"UTF-8")));
 		}else {
 			try {
@@ -41,7 +41,7 @@ public class ChatListServlet extends HttpServlet {
 		StringBuffer result = new StringBuffer("");
 		result.append("{\"result\":[");
 		ChatDAO chatDAO = new ChatDAO();
-		ArrayList<ChatDTO> chatList = chatDAO.getChatListByRecent(fromId, toID, 10);
+		ArrayList<ChatDTO> chatList = chatDAO.getChatListByRecent(fromId, toID, 100);
 		if(chatList.size()==0) return "";
 		for(int i =0; i<chatList.size(); i++) {
 			result.append("[{\"value\": \"" + chatList.get(i).getFromID()+"\"},");
@@ -51,6 +51,7 @@ public class ChatListServlet extends HttpServlet {
 			if(i != chatList.size() -1) result.append(",");
 		}
 		result.append("], \"last\":\"" + chatList.get(chatList.size() - 1).getChatID()+"\"}");
+		chatDAO.readChat(fromId, toID);
 		return result.toString();
 	}
 	public String getID(String fromId,String toID, String chatID) {
@@ -67,6 +68,7 @@ public class ChatListServlet extends HttpServlet {
 			if(i != chatList.size() -1) result.append(",");
 		}
 		result.append("], \"last\":\"" + chatList.get(chatList.size() - 1).getChatID()+"\"}");
+		chatDAO.readChat(fromId, toID);
 		return result.toString();
 	}
 }

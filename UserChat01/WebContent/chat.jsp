@@ -78,6 +78,7 @@
 				toID : encodeURIComponent(toID),
 				listType:type
 			},
+
 			success: function(data){
 				if(data == "") return;
 				var parsed = JSON.parse(data);
@@ -125,8 +126,32 @@
 		},3000);
 	
 	}
+	function getUnread(){
+		$.ajax({
+			type:"POST",
+			url:"./ChatUnreadServlet",
+			data:{
+				userID:encodeURIComponent('<%=userID%>'),
+			},
+			success:function(result){
+				if(result>=1){
+					showUnread(result);
+				}else{
+					showUnread('');
+				}
+			}
+				
+		});
+	}
+	function getInfiniteUnread(){
+		setInterval(function(){
+			getUnread();
+		},4000);
+	}
+	function showUnread(result){
+		$('#unread').html(result);
+	}
 </script>
-
 
 
 </head>
@@ -146,9 +171,12 @@
 		</div>
 			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 				<ul class="nav navbar-nav">
-					<li class="active"><a href="index.jsp">메인</a>
-					<li class="active"><a href="find.jsp">친구찾기</a>
+					<li><a href="index.jsp">메인</a>
+					<li><a href="find.jsp">친구찾기</a>
+					<li><a href="box.jsp">메시지함<span id="unread" class="label label-info"></span></a></li>
+					<li><%=userID %></li>
 				</ul>
+				
 				<%
 					if(userID !=null){
 				
@@ -264,8 +292,10 @@
 	<script type="text/javascript">
 	$('#messageModal').modal("show");
 	$(document).ready(function(){
-		chatListFunction('ten');
+		getUnread();
+		chatListFunction('0');
 		getInfiniteChat();
+		getInfiniteUnread();
 	});
 	</script>
 </body>
