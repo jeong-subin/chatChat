@@ -104,7 +104,9 @@ public class ChatDAO {
 		}
 		return chatList;
 	}
-	//
+	
+	
+	
 	public ArrayList<ChatDTO> getBox(String userID){
 		ArrayList<ChatDTO> chatList = null;
 		Connection conn= null;
@@ -222,6 +224,37 @@ public class ChatDAO {
 			conn = DBManager.getConnection();
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, userID);
+			rs  = pstmt.executeQuery();
+			if(rs.next()) {
+				return rs.getInt("count(chatID)");
+			}
+			return 0; //받은 메시지 없음.
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				if(rs !=null )rs.close();
+				if(pstmt != null) pstmt.close();
+				if(conn != null) conn.close();
+				if(rs != null)rs.close();
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return -1; //데이터베이스 오류
+	}
+	
+	// 대화별 안읽은 메시지 출력
+	public int getUnreadChat(String fromID,String toID) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs=null;
+		String sql = "select count(chatID) from chat where fromID =? and toID = ? and chatRead = 0";
+		try {
+			conn = DBManager.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, fromID);
+			pstmt.setString(2, toID);
 			rs  = pstmt.executeQuery();
 			if(rs.next()) {
 				return rs.getInt("count(chatID)");

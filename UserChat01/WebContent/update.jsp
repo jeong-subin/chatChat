@@ -1,14 +1,23 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ page import = "user.*" %>
+
 <!DOCTYPE html>
 <html>
 	<%	//세션으로 해당사용자의 접속 유무 판별
 		String userID =null;
 		if(session.getAttribute("userID") !=null){
 			userID =(String) session.getAttribute("userID");
-					
 		}
-	
+		if(userID == null){
+			session.setAttribute("messageType", "오류 메시지");
+			session.setAttribute("messageContent", "현재 로그인이 되어 있지 않습니다.");
+			response.sendRedirect("index.jsp");
+			return;
+		}
+		
+		 
+		 UserDTO user = new UserDAO().getUser(userID);
 	%>
 <head>
 	<meta charset="UTF-8">
@@ -44,7 +53,15 @@
 		function showUnread(result){
 			$('#unread').html(result);
 		}
-		
+		function passwordCheckFunction(){
+			var userPassword1 = $('#userPassword1').val();
+			var userPassword2 = $('#userPassword2').val();
+			if(userPassword1 != userPassword2){
+				$('#passwordCheckMessage').html('비밀번호가 서로 일치하지 않습니다.');
+			}else{
+				$('#passwordCheckMessage').html('');
+			}
+		}
 	</script>
 </head>
 <body>
@@ -63,30 +80,13 @@
 		</div>
 			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 				<ul class="nav navbar-nav">
-					<li class="active"><a href="index.jsp">메인</a>
+					<li><a href="index.jsp">메인</a>
 					<li><a href="find.jsp">친구찾기</a>
 					<li><a href="box.jsp">메시지함<span id="unread" class="label label-info"></span></a></li>
 					<li><%=userID %></li>
 				</ul>
 				<!-- 로그인이 안된 상태 -->
-				<%
-					if(userID == null){
-				%>
-				<ul class="nav navbar-nav navbar-right">
-					<li class="dropdown">
-						<a href="#" class="dropdown-togle"
-							data-toggle="dropdown" role="button" aria-haspopup="true"
-							aria-expanded="false">접속하기<span class="caret"></span>
-						</a>
-						<ul class="dropdown-menu">	
-							<li><a href="login.jsp">로그인</a></li>
-							<li><a href="join.jsp">회원가입</a></li>
-						</ul>
-					</li>
-				</ul>
-				<%		
-					}else{
-				%>
+	
 				<!-- 로그인이 된 상태 -->
 				<ul class="nav navbar-nav navbar-right">
 					<li class="dropdown">
@@ -95,17 +95,73 @@
 							aria-expanded="false">회원관리<span class="caret"></span>
 						</a>
 						<ul class="dropdown-menu">	
-							<li><a href="update.jsp">회원정보 수정</a></li>
+							<li  class="active"><a href="update.jsp">회원정보 수정</a></li>
 							<li><a href="logoutAction.jsp">로그아웃</a></li>
 							
 						</ul>
 					</li>
 				</ul>
-				<%		
-					}
-				%>
+			
 			</div>
 	</nav>
+		<div class="container">
+		<form method = "post" action="./UserUpdateServlet">
+			<table class="table table-bordered table-hover" style="text-align:center; border: 1px solid #dddddd">
+				<thead>
+					<tr>
+						<th colspan="2"><h4>회원정보 수정 양식</h4>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td style="width: 110px;"><h5>아이디</h5></td>
+						<td><h5><%=user.getUserID() %></h5>
+						<input type="hidden" name="userID" value="<%=user.getUserID() %>"></td>
+					</tr>
+					<tr>
+						<td style="width: 110px;"><h5>비밀번호</h5></td>
+						<td colspan="2"><input onkeyup="passwordCheckFunction();" class="form-control" type="password" id ="userPassword1" name="userPassword1" maxlength="20" placeholder="비밀번호를 입력하세요"></td>
+					</tr>
+					<tr>
+						<td style="width: 110px;"><h5>비밀번호 확인</h5></td>
+						<td colspan="2"><input onkeyup="passwordCheckFunction();" class="form-control" type="password" id ="userPassword2" name="userPassword2" maxlength="20" placeholder="비밀번호 확인를 입력하세요"></td>
+					</tr>
+					<tr>
+						<td style="width: 110px;"><h5>이름</h5></td>
+						<td colspan="2"><input  class="form-control" type="text" id ="userName" name="userName" maxlength="20" placeholder="이름를 입력하세요" value="<%= user.getUserName()%>"></td>
+					</tr>
+					<tr>
+						<td style="width: 110px;"><h5>나이</h5></td>
+						<td colspan="2"><input  class="form-control" type="number" id ="userAge" name="userAge" maxlength="20" placeholder="나이를 입력하세요" value="<%= user.getUserAge()%>"></td>
+					</tr>
+					<tr>
+						<td style="width: 110px;"><h5>성별</h5></td>
+						<td colspan="2">
+							<div class="form-group" style="text-align: center; margin: 0 auto;">
+								<div class="btn-group" data-toggle="buttons">
+									<label class="btn btn-primary  <% if(user.getUserGender().equals("남자")) out.print("active"); %>">
+										<input type="radio" name="userGender" autocomplete="off" value="남자" <% if(user.getUserGender().equals("남자")) out.print("ckecked"); %>>남자
+									</label>
+									<label class="btn btn-primary <% if(user.getUserGender().equals("여자")) out.print("active"); %> ">
+										<input type="radio" name="userGender" autocomplete="off" value="여자" <% if(user.getUserGender().equals("여자")) out.print("ckecked"); %>>여자
+									</label>
+								</div>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td style="width: 110px;"><h5>이메일</h5></td>
+						<td colspan="2"><input  class="form-control" type="email" id ="userEmail" name="userEmail" maxlength="20" placeholder="이메일를 입력하세요" value="<%=user.getUserEmail() %>"></td>
+					</tr>
+					<tr>
+						<td style="text-align:left;" colspan="3"><h5 style="color: red;" id="passwordCheckMessage"></h5><input class="btn btn-primary pull-right" type="submit" value="수정"></td>
+					</tr>
+				</tbody>
+			</table>
+		</form>
+	
+	</div>
+	
 	
 	<!-- navbar  end -->
 	

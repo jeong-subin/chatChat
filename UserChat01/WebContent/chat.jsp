@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ page import="java.net.URLDecoder" %>
+
     	<%	//세션으로 해당사용자의 접속 유무 판별
 		String userID =null;
 		if(session.getAttribute("userID") !=null){
@@ -20,6 +22,11 @@
 			session.setAttribute("messageContent", "대화 상대가 지정 되어 있지 않습니다.");
 			response.sendRedirect("index.jsp");
 			return;
+		}
+		if(userID.equals(URLDecoder.decode(toID,"UTF-8"))){
+			session.setAttribute("messageType", "오류 메시지");
+			session.setAttribute("messageContent", "대화 상대가 지정 되어 있지 않습니다.");
+			response.sendRedirect("index.jsp");
 		}
 	%>
 <!DOCTYPE html>
@@ -188,6 +195,7 @@
 							aria-expanded="false">회원관리<span class="caret"></span>
 						</a>
 						<ul class="dropdown-menu">	
+							<li><a href="update.jsp">회원정보 수정</a></li>
 							<li><a href="logoutAction.jsp">로그아웃</a></li>
 							
 						</ul>

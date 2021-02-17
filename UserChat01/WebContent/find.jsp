@@ -117,6 +117,7 @@
 							aria-expanded="false">회원관리<span class="caret"></span>
 						</a>
 						<ul class="dropdown-menu">	
+							<li><a href="update.jsp">회원정보 수정</a></li>
 							<li><a href="logoutAction.jsp">로그아웃</a></li>
 							
 						</ul>
@@ -149,7 +150,7 @@
 			<table id="friendResult" class="table table-bordered table-hover" style="text-align: center; border:1px solid #dddddd;">
 			</table>
 		</div>	
-		<%
+	<%
 		String messageContent = null;
 		String messageType =null;
 		
@@ -165,7 +166,7 @@
 		if(messageContent != null){		
 	
 			
-	%>
+	  %>
 	<!-- modal -->
 	<div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-hidden="true">
 		<div class="vertical-alignment-helper">
