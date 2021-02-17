@@ -38,7 +38,7 @@ public class UserRegisterServlet extends HttpServlet {
 			response.sendRedirect("join.jsp");
 			return;
 		}
-		int result = new UserDAO().register(userID, userPassword1, userName, userAge, userGender, userEmail, userProfile);
+		int result = new UserDAO().register(userID, userPassword1, userName, userAge, userGender, userEmail, "");
 	
 		if(result == 1) {
 			request.getSession().setAttribute("userID", userID);

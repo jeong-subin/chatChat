@@ -180,6 +180,66 @@ public class UserDAO {
 		}
 		return -1; // db오류
 	}	
+	
+	
+	public int profile(String userID,String userProfile){
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		String sql= "update  user1 set  userProfile = ? where userID = ?";
+		try {
+			conn = DBManager.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, userProfile);
+			pstmt.setString(2, userID);
+			return pstmt.executeUpdate();
+		
+			}catch (Exception e) {
+				e.printStackTrace();
+		
+			}finally {
+				try {
+				
+					if(pstmt !=null) pstmt.close();
+					if(conn !=null) conn.close();
+					
+			}catch (Exception e) {
+				e.printStackTrace();
+			}	
+		}
+		return -1; // db오류
+	}	
+	
+	public String getProfile(String userID){
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs= null;
+		String sql= "select userProfile from user1 where userID=?";
+		try {
+			conn = DBManager.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, userID);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				if(rs.getString("userProfile") == null) {
+					return "http://localhost:8090/UserChat01/images/icon.png";
+				}
+				return "http://localhost:8090/UserChat01/upload/"+rs.getString("userProfile");
+				}
+			}catch (Exception e) {
+				e.printStackTrace();
+				// TODO: handle exception
+			}finally {
+				try {
+					if(rs !=null) rs.close();
+					if(pstmt !=null) pstmt.close();
+					if(conn !=null) conn.close();
+					
+			}catch (Exception e) {
+				e.printStackTrace();
+			}	
+		}
+		return "http://localhost:8090/UserChat01/images/icon.png";
+	}	
 }
 				
 		

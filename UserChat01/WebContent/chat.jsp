@@ -1,8 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import="java.net.URLDecoder" %>
+<%@ page import="user.UserDAO" %>
 
-    	<%	//세션으로 해당사용자의 접속 유무 판별
+    	<%//세션으로 해당사용자의 접속 유무 판별
 		String userID =null;
 		if(session.getAttribute("userID") !=null){
 			userID =(String) session.getAttribute("userID");
@@ -28,6 +29,8 @@
 			session.setAttribute("messageContent", "대화 상대가 지정 되어 있지 않습니다.");
 			response.sendRedirect("index.jsp");
 		}
+		String fromProfile = new UserDAO().getProfile(userID);
+		String toProfile = new UserDAO().getProfile(toID);
 	%>
 <!DOCTYPE html>
 <html>
@@ -103,11 +106,12 @@
 		});
 	}
 	function addChat(chatName,chatContent,chatTime){
+		if(chatName == '나'){
 		$('#chatList').append('<div class="row">'+
 				'<div class="col-lg-12">'+
 				'<div class="media">'+
 				'<a class="pull-left" href="#">'+
-				'<img class="media-object img-circle" style="width:30px; height:30px;"src="images/icon.png" alt="">'+
+				'<img class="media-object img-circle" style="width:30px; height:30px;" src="<%= fromProfile %>" alt="">'+
 				'</a>'+
 				'<div class="media-body">'+
 				'<h4 class="media-heading">'+
@@ -123,7 +127,30 @@
 				'</div>'+
 				'</div>'+
 				'</div>'+
-				'<hr>');				
+				'<hr>');
+		}else{
+			$('#chatList').append('<div class="row">'+
+					'<div class="col-lg-12">'+
+					'<div class="media">'+
+					'<a class="pull-left" href="#">'+
+					'<img class="media-object img-circle" style="width:30px; height:30px;" src="<%= toProfile %>" alt="">'+
+					'</a>'+
+					'<div class="media-body">'+
+					'<h4 class="media-heading">'+
+					chatName+
+					'<span class="small pull-right">'+
+					chatTime+
+					'</span>'+
+					'<h4>'+
+					'<p>'+
+					chatContent +
+					'</p>'+
+					'</div>'+
+					'</div>'+
+					'</div>'+
+					'</div>'+
+					'<hr>');
+		}
 	$('#chatList').scrollTop($('#chatList')[0].scrollHeight);
 		   		
 	}
