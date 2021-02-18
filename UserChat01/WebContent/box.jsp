@@ -116,6 +116,7 @@
 					<li><a href="index.jsp">메인</a>
 					<li><a href="find.jsp">친구찾기</a>
 					<li class="active"><a href="box.jsp">메시지함<span id="unread" class="label label-info"></span></a></li>
+					<li><a href="boardView.jsp">자유게시판</a></li>
 					<li><%=userID %></li>
 				</ul>
 				<!-- 로그인이 안된 상태 -->

@@ -1,23 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ page import = "user.*" %>
-
 <!DOCTYPE html>
 <html>
 	<%	//세션으로 해당사용자의 접속 유무 판별
 		String userID =null;
 		if(session.getAttribute("userID") !=null){
 			userID =(String) session.getAttribute("userID");
+					
 		}
-		if(userID == null){
-			session.setAttribute("messageType", "오류 메시지");
-			session.setAttribute("messageContent", "현재 로그인이 되어 있지 않습니다.");
-			response.sendRedirect("index.jsp");
-			return;
-		}
-		
-		 
-		 UserDTO user = new UserDAO().getUser(userID);
+	
 	%>
 <head>
 	<meta charset="UTF-8">
@@ -53,15 +44,7 @@
 		function showUnread(result){
 			$('#unread').html(result);
 		}
-		function passwordCheckFunction(){
-			var userPassword1 = $('#userPassword1').val();
-			var userPassword2 = $('#userPassword2').val();
-			if(userPassword1 != userPassword2){
-				$('#passwordCheckMessage').html('비밀번호가 서로 일치하지 않습니다.');
-			}else{
-				$('#passwordCheckMessage').html('');
-			}
-		}
+		
 	</script>
 </head>
 <body>
@@ -83,11 +66,28 @@
 					<li><a href="index.jsp">메인</a>
 					<li><a href="find.jsp">친구찾기</a>
 					<li><a href="box.jsp">메시지함<span id="unread" class="label label-info"></span></a></li>
-					<li><a href="boardView.jsp">자유게시판</a></li>
+					<li  class="active"><a href="boardView.jsp">자유게시판</a></li>
 					<li><%=userID %></li>
 				</ul>
 				<!-- 로그인이 안된 상태 -->
-	
+				<%
+					if(userID == null){
+				%>
+				<ul class="nav navbar-nav navbar-right">
+					<li class="dropdown">
+						<a href="#" class="dropdown-togle"
+							data-toggle="dropdown" role="button" aria-haspopup="true"
+							aria-expanded="false">접속하기<span class="caret"></span>
+						</a>
+						<ul class="dropdown-menu">	
+							<li><a href="login.jsp">로그인</a></li>
+							<li><a href="join.jsp">회원가입</a></li>
+						</ul>
+					</li>
+				</ul>
+				<%		
+					}else{
+				%>
 				<!-- 로그인이 된 상태 -->
 				<ul class="nav navbar-nav navbar-right">
 					<li class="dropdown">
@@ -97,56 +97,47 @@
 						</a>
 						<ul class="dropdown-menu">	
 							<li><a href="update.jsp">회원정보 수정</a></li>
-							<li  class="active"><a href="profileUpdate.jsp">프로필 수정</a></li>
+							<li><a href="profileUpdate.jsp">프로필 수정</a></li>
 							<li><a href="logoutAction.jsp">로그아웃</a></li>
 							
 						</ul>
 					</li>
 				</ul>
-			
+				<%		
+					}
+				%>
 			</div>
 	</nav>
-		<div class="container">
-		<form method = "post" action="./UserProfileServlet" enctype="multipart/form-data">
-			<table class="table table-bordered table-hover" style="text-align:center; border: 1px solid #dddddd">
-				<thead>
-					<tr>
-						<th colspan="2"><h4>프로필 사진 수정 양식</h4>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td style="width: 110px;"><h5>아이디</h5></td>
-						<td><h5><%=user.getUserID() %></h5>
-						<input type="hidden" name="userID" value="<%=user.getUserID() %>"></td>
-					</tr>
-					<tr>
-						<td style="width: 110px;"><h5>사진업로드</h5></td>
-						<td colspan="2">
-						<input type="file" name="userProfile" class="file">
-							<div class="input-group col-xs-12">
-								<span class="input-group-addon"><i class="glyphicon glyphicon-picture"></i></span>
-								<input type="text" class="form-control input-lg" disabled placeholder="이미지를 업로드하세요.">
-								<span class="input-group-btn">
-									<button class="browse btn btn-primary input-lg" type="button"><i class="glyphicon glyphicon-search"></i>
-									 파일찾기</button>
-								</span>
-							</div>
-							
-						</td>
-					</tr>
-					<tr>
-						<td style="text-align:left;" colspan="3"><h5 style="color: red;" id="passwordCheckMessage"></h5><input class="btn btn-primary pull-right" type="submit" value="등록"></td>
-					</tr>
-				</tbody>
-			</table>
-		</form>
-	
-	</div>
-	
 	
 	<!-- navbar  end -->
-	
+	<div class="container">
+		<table class="table table-bordered table-hover" style="text-align: center; border:1px solid #dddddd">
+			<thead>
+				<tr>
+					<th colspan="5"><h4>자유게시판</h4></th>
+				</tr>
+				<tr>
+					<th style="background-color: #fafafa; color:#000000; width:70px;"><h5>번호</h5></th>
+					<th style="background-color: #fafafa; color:#000000; "><h5>제목</h5></th>
+					<th style="background-color: #fafafa; color:#000000; "><h5>작성자</h5></th>
+					<th style="background-color: #fafafa; color:#000000; width:100px;"><h5>작성 날짜</h5></th>
+					<th style="background-color: #fafafa; color:#000000; width:70px;"><h5>조회수</h5></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>1</td>
+					<td>안녕하세요</td>
+					<td>홍길동</td>
+					<td>2018-01-01</td>
+					<td>1</td>
+				</tr>
+				<tr>
+					<td colspan="5"><a href="boardWrite.jsp" class="btn btn-primary pull-right" type="submit">글쓰기</a></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 	
 	<%
 		String messageContent = null;
@@ -211,14 +202,6 @@
 	<%
 		}
 	%>
-	<script type="text/javascript">
-		$(document).on('click','.browse',function(){
-			var file = $(this).parent().parent().parent().find('.file');
-			file.trigger('click');
-		});
-		$(document).on('change','.file',function(){
-			$(this).parent().find('.form-control').val($(this).val().replace(/C:\\fakepath\\/i,''));
-		});
-	</script>
+	<!-- modal end-->
 </body>
 </html>

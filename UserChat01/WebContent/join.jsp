@@ -72,6 +72,7 @@
 				<ul class="nav navbar-nav">
 					<li><a href="index.jsp">메인</a>
 					<li><a href="find.jsp">친구찾기</a>
+					<li><a href="boardView.jsp">자유게시판</a></li>
 				</ul>
 				<%
 					if(userID == null){
