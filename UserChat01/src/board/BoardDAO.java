@@ -3,8 +3,8 @@ package board;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 
-import board.BoardDTO;
 import util.DBManager;
 
 public class BoardDAO {
@@ -59,7 +59,7 @@ public class BoardDAO {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, boardID);
 			rs = pstmt.executeQuery();
-			if(rs.next()) {
+			while(rs.next()) {
 				board.setUserID(rs.getString("userID"));
 				board.setBoardID(rs.getInt("boardID"));
 				board.setBoardTitle(rs.getString("boardTitle"));
@@ -88,6 +88,51 @@ public class BoardDAO {
 			}	
 		}
 		return board;
+		
+	}	
+	
+	public ArrayList<BoardDTO> getList(){
+		ArrayList<BoardDTO> boardList = null;
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs= null;// 
+		String sql= "select * from board order by boardGroup DESC, boardSequence ASC";
+		try {
+			conn = DBManager.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			boardList = new ArrayList<BoardDTO>();
+			while(rs.next()) {
+				BoardDTO board = new BoardDTO();
+				board.setUserID(rs.getString("userID"));
+				board.setBoardID(rs.getInt("boardID"));
+				board.setBoardTitle(rs.getString("boardTitle"));
+				board.setBoardContent(rs.getString("boardContent"));
+				board.setBoardDate(rs.getString("boardDate"));
+				board.setBoardHit(rs.getInt("boardHit"));
+				board.setBoardFile(rs.getString("boardFile"));
+				board.setBoardRealFile(rs.getString("boardRealFile"));
+				board.setBoardGroup(rs.getInt("boardGroup"));
+				board.setBoardSequence(rs.getInt("boardSequence"));
+				board.setBoardLevel(rs.getInt("boardLevel"));
+				boardList.add(board);
+			}
+				
+			
+			}catch (Exception e) {
+				e.printStackTrace();
+				// TODO: handle exception
+			}finally {
+				try {
+					if(rs !=null) rs.close();
+					if(pstmt !=null) pstmt.close();
+					if(conn !=null) conn.close();
+					
+			}catch (Exception e) {
+				e.printStackTrace();
+			}	
+		}
+		return boardList;
 		
 	}	
 }
