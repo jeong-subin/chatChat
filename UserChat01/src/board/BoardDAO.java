@@ -92,15 +92,17 @@ public class BoardDAO {
 		
 	}	
 	
-	public ArrayList<BoardDTO> getList(){
+	public ArrayList<BoardDTO> getList(String pageNumber){
 		ArrayList<BoardDTO> boardList = null;
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs= null;// 
-		String sql= "select * from board order by boardGroup DESC, boardSequence ASC";
+		String sql= "select * from board where boardGroup >(select max(boardGroup) from board) - ? and boardGroup <=(select Max(boardGroup) from board) -? order by boardGroup DESC, boardSequence ASC";
 		try {
 			conn = DBManager.getConnection();
 			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, Integer.parseInt(pageNumber)*10);
+			pstmt.setInt(2, (Integer.parseInt(pageNumber)-1)*10);
 			rs = pstmt.executeQuery();
 			boardList = new ArrayList<BoardDTO>();
 			while(rs.next()) {
@@ -361,5 +363,69 @@ public class BoardDAO {
 	
 		return -1; // db오류
 	}	
+	public boolean nextPage(String pageNumber) {
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs= null;
+		String sql= "select * from board where boardGroup >= ?";
+		try {
+			conn = DBManager.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, Integer.parseInt(pageNumber)*10);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				
+				return true;
+			}
+				
+
+			}catch (Exception e) {
+				e.printStackTrace();
+			}finally {
+				try {
+					if(rs !=null) rs.close();
+					if(pstmt !=null) pstmt.close();
+					if(conn !=null) conn.close();
+					
+			}catch (Exception e) {
+				e.printStackTrace();
+			}	
+		}
+		return false;
+		
+	}	
 	
+public int targetPage(String pageNumber) {
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs= null;
+		String sql= "select count(boardGroup) from board where boardGroup >?";
+		try {
+			conn = DBManager.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, (Integer.parseInt(pageNumber)-1)*10);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				
+				return rs.getInt(1)/10;
+			}
+				
+
+			}catch (Exception e) {
+				e.printStackTrace();
+			}finally {
+				try {
+					if(rs !=null) rs.close();
+					if(pstmt !=null) pstmt.close();
+					if(conn !=null) conn.close();
+					
+			}catch (Exception e) {
+				e.printStackTrace();
+			}	
+		}
+		return 0;
+		
+	}	
 }
