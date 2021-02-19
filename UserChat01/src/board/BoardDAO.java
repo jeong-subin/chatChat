@@ -15,7 +15,7 @@ public class BoardDAO {
 		PreparedStatement pstmt = null;
 
 		
-		String sql= "INSERT INTO BOARD (USERID, BOARDID, BOARDTITLE, BOARDCONTENT, BOARDDATE, BOARDHIT,BOARDFILE, BOARDREALFILE, BOARDGROUP, BOARDSEQUENCE, BOARDLEVEL) values(?,boardID_seq.nextval,?,?,sysdate,0,?,?,nvl((select max(BOARDGROUP)+1 from board),0),0,0)";
+		String sql= "INSERT INTO BOARD (USERID, BOARDID, BOARDTITLE, BOARDCONTENT, BOARDDATE, BOARDHIT,BOARDFILE, BOARDREALFILE, BOARDGROUP, BOARDSEQUENCE, BOARDLEVEL,BOARDAVAILABLE) values(?,boardID_seq.nextval,?,?,sysdate,0,?,?,nvl((select max(BOARDGROUP)+1 from board),0),0,0,1)";
 			
 		try {
 			conn = DBManager.getConnection();
@@ -71,8 +71,9 @@ public class BoardDAO {
 				board.setBoardGroup(rs.getInt("boardGroup"));
 				board.setBoardSequence(rs.getInt("boardSequence"));
 				board.setBoardLevel(rs.getInt("boardLevel"));
+				board.setBoardAvailable(rs.getInt("boardAvailable"));
 			}
-				
+			
 			
 			}catch (Exception e) {
 				e.printStackTrace();
@@ -115,6 +116,7 @@ public class BoardDAO {
 				board.setBoardGroup(rs.getInt("boardGroup"));
 				board.setBoardSequence(rs.getInt("boardSequence"));
 				board.setBoardLevel(rs.getInt("boardLevel"));
+				board.setBoardAvailable(rs.getInt("boardAvailable"));
 				boardList.add(board);
 			}
 				
@@ -262,7 +264,7 @@ public class BoardDAO {
 		PreparedStatement pstmt = null;
 
 		
-		String sql= "delete from board where boardID = ?";
+		String sql= "UPDATE BOARD SET boardAvailable = 0 where boardID = ?";
 			
 		try {
 			conn = DBManager.getConnection();
@@ -285,4 +287,79 @@ public class BoardDAO {
 		return 0;
 	
 	}	
+	
+	public int reply(String userID, String boardTitle, String boardContent, String boardFile,String boardRealFile, BoardDTO parent){
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+
+		
+		String sql= "INSERT INTO BOARD (USERID, BOARDID, BOARDTITLE, BOARDCONTENT, BOARDDATE, BOARDHIT,BOARDFILE, BOARDREALFILE, BOARDGROUP, BOARDSEQUENCE, BOARDLEVEL,BOARDAVAILABLE) values(?,boardID_seq.nextval,?,?,sysdate,0,?,?,?,?,?,1)";
+			
+		try {
+			conn = DBManager.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, userID);
+			pstmt.setString(2, boardTitle);
+			pstmt.setString(3, boardContent);
+			pstmt.setString(4, boardFile);
+			pstmt.setString(5, boardRealFile);
+			pstmt.setInt(6, parent.getBoardGroup());
+			pstmt.setInt(7, parent.getBoardSequence()+1);
+			pstmt.setInt(8, parent.getBoardLevel()+1);
+			
+			pstmt.executeUpdate();
+			
+		}catch (Exception e) {
+				e.printStackTrace();
+				System.out.println("222222");
+				// TODO: handle exception
+			}finally {
+				try {
+					System.out.println("33333");
+				
+					if(pstmt !=null) pstmt.close();
+					if(conn !=null) conn.close();
+					
+			}catch (Exception e) {
+				System.out.println("44444");
+				e.printStackTrace();
+			}	
+		}
+		System.out.println("555");
+		return -1; // db오류
+	}	
+	// 부모글을 입력을 받아서 
+	public int replyUpdate(BoardDTO parent){
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+
+		
+		String sql= "update board set boardSequence = boardSequence +1 where boardGroup = ? and boardSequence > ?";
+		try {
+			conn = DBManager.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, parent.getBoardGroup());
+			pstmt.setInt(2, parent.getBoardSequence());
+			pstmt.executeUpdate();
+			
+		}catch (Exception e) {
+				e.printStackTrace();
+				
+				// TODO: handle exception
+			}finally {
+				try {
+				
+				
+					if(pstmt !=null) pstmt.close();
+					if(conn !=null) conn.close();
+					
+			}catch (Exception e) {
+		
+				e.printStackTrace();
+			}	
+		}
+	
+		return -1; // db오류
+	}	
+	
 }

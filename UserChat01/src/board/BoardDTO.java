@@ -12,6 +12,17 @@ public class BoardDTO {
 		int boardGroup;
 		int boardSequence;
 		int boardLevel;
+		
+		
+		
+		
+		public int getBoardAvailable() {
+			return boardAvailable;
+		}
+		public void setBoardAvailable(int boardAvailable) {
+			this.boardAvailable = boardAvailable;
+		}
+		int boardAvailable;
 	
 		
 		
