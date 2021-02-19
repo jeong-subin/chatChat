@@ -134,5 +134,155 @@ public class BoardDAO {
 		}
 		return boardList;
 		
+	}
+	public int hit(String boardId){
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		String sql= "update board set boardHit = boardHit +1 where boardID = ?";
+		try {
+			conn = DBManager.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, boardId);
+			pstmt.executeUpdate();
+		}catch (Exception e) {
+				e.printStackTrace();
+			}finally {
+				try {
+					if(pstmt !=null) pstmt.close();
+					if(conn !=null) conn.close();
+					
+			}catch (Exception e) {
+				
+				e.printStackTrace();
+			}	
+		}
+		
+		return -1; // db오류
+	}
+	
+	public String getFile(String boardID) {
+		BoardDTO board = new BoardDTO();
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs= null;
+		String sql= "select boardFile from board where boardID = ?";
+		try {
+			conn = DBManager.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, boardID);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				
+				return rs.getString("boardFile");
+			}
+				
+			return "";
+			}catch (Exception e) {
+				e.printStackTrace();
+			}finally {
+				try {
+					if(rs !=null) rs.close();
+					if(pstmt !=null) pstmt.close();
+					if(conn !=null) conn.close();
+					
+			}catch (Exception e) {
+				e.printStackTrace();
+			}	
+		}
+		return "";
+		
+	}	
+	public String getRealFile(String boardID) {
+		BoardDTO board = new BoardDTO();
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs= null;
+		String sql= "select boardRealFile from board where boardID = ?";
+		try {
+			conn = DBManager.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, boardID);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				
+				return rs.getString("boardRealFile");
+			}
+				
+			return "";
+			}catch (Exception e) {
+				e.printStackTrace();
+			}finally {
+				try {
+					if(rs !=null) rs.close();
+					if(pstmt !=null) pstmt.close();
+					if(conn !=null) conn.close();
+					
+			}catch (Exception e) {
+				e.printStackTrace();
+			}	
+		}
+		return "";
+		
+	}	
+	
+	public int update(String userID, String boardID, String boardTitle, String boardContent, String boardFile,String boardRealFile){
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+
+		
+		String sql= "update BOARD set BOARDTITLE=?, BOARDCONTENT=?, BOARDFILE=?, BOARDREALFILE=? where boardID = ?";
+			
+		try {
+			conn = DBManager.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, boardTitle);
+			pstmt.setString(2, boardContent);
+			pstmt.setString(3, boardFile);
+			pstmt.setString(4, boardRealFile);
+			pstmt.setInt(5, Integer.parseInt(boardID));
+			
+			pstmt.executeUpdate();
+			
+		}catch (Exception e) {
+				e.printStackTrace();
+			}finally {
+				try {
+					if(pstmt !=null) pstmt.close();
+					if(conn !=null) conn.close();
+			}catch (Exception e) {
+				e.printStackTrace();
+			}	
+		}
+		System.out.println("555");
+		return -1; // db오류
+	}	
+
+	public int delete(String boardID){
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+
+		
+		String sql= "delete from board where boardID = ?";
+			
+		try {
+			conn = DBManager.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, Integer.parseInt(boardID));
+			
+			pstmt.executeUpdate();
+			
+		}catch (Exception e) {
+				e.printStackTrace();
+			}finally {
+				try {
+					if(pstmt !=null) pstmt.close();
+					if(conn !=null) conn.close();
+			}catch (Exception e) {
+				e.printStackTrace();
+			}	
+		}
+		 // db오류
+		return 0;
+	
 	}	
 }
