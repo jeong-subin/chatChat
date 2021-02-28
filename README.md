@@ -53,5 +53,6 @@ https://youtu.be/OlnqI5vF9tE
 
 
 ### 느낀점
-저는 jsp에서 form에서 servlet에 보내서 비지니스 로직을 처리했습니다. 하지만 안 읽은메시지, 채팅기능을 구현하면서 ajax를 처음 사용해보게 되었습니다. javaScript,ajax,jquery의 공부 필요성을 많이 깨닫게해주는 프로젝트였고 앞으로 javaScript,ajax,jquery 더 깊게 공부를 할 것입니다. 
+
+저는 jsp에서 form에서 servlet에 보내서 비지니스 로직을 처리했습니다. 하지만 안 읽은 메시지, 채팅 기능을 구현 하면서 ajax를 처음 사용해보게 되었습니다. javaScript,ajax,jquery의 공부 필요성을 많이 깨닫게 해주는 프로젝트였습니다.
 
